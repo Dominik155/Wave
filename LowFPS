@@ -1,0 +1,19 @@
+package Exceptions;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+
+import Gui.Game;
+
+public class LowFPS {
+	
+	public void render(Graphics g) {
+		if (Game.lowFPS) {
+			g.setColor(Color.white);
+			g.setFont(new Font("arial", Font.BOLD, 10));
+			g.drawString("Warning: Low FPS: " + Game.FPS, 0 + 10, Game.HEIGHT - 50);
+		}
+	}
+
+}
