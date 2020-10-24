@@ -1,0 +1,120 @@
+package Gui;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Random;
+
+import GameObjects.BasicEnemy;
+import GameObjects.ID;
+import GameObjects.Player;
+import Gui.Game.STATE;
+import Handler.Handler;
+
+public class Menu extends MouseAdapter {
+	private Game game;
+	private Handler handler;
+	private Random r = new Random();
+
+	public Menu(Game game, Handler handler) {
+		this.game = game;
+		this.handler = handler;
+	}
+
+	@SuppressWarnings("static-access")
+	public void mousePressed(MouseEvent e) {
+		int mx = e.getX();
+		int my = e.getY();
+
+		// Play button
+		if (mouseOver(mx, my, Game.WIDTH / 2 - 100, 150, 200, 64)) {
+			game.gameState = STATE.GAME;
+			handler.addObject(new Player(game.WIDTH / 2 - 32, game.HEIGHT / 2 - 32, 32, 32, ID.Player, handler));
+			handler.clearEnemys();
+			handler.addObject(new BasicEnemy(r.nextInt(Game.WIDTH - 128), r.nextInt(Game.HEIGHT - 128), 16, 16,
+					ID.BasicEnemy, handler));
+		}
+
+		// Help Button
+		if (mouseOver(mx, my, Game.WIDTH / 2 - 100, 250, 200, 64)) {
+			game.gameState = STATE.HELP;
+		}
+
+		// Back Button for Help
+		if (game.gameState == STATE.HELP) {
+			if (mouseOver(mx, my, Game.WIDTH / 2 - 90, 450, 200, 64)) {
+				game.gameState = STATE.MENU;
+				return;
+			}
+		}
+
+		// Quit Button
+		if (mouseOver(mx, my, Game.WIDTH / 2 - 100, 350, 200, 64)) {
+			System.exit(1);
+		}
+	}
+
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	private boolean mouseOver(int mx, int my, int x, int y, int width, int height) {
+		if (mx > x && mx < x + width) {
+			if (my > y && my < y + height) {
+				return true;
+			} else
+				return false;
+		} else
+			return false;
+	}
+
+	public void tick() {
+
+	}
+
+	public void render(Graphics g) {
+		
+		if (game.gameState == STATE.MENU) {
+			Font fnt = new Font("arial", 1, 50);
+			Font fnt2 = new Font("arial", 1, 30);
+
+			g.setFont(fnt);
+			g.setColor(Color.white);
+			g.drawString("WAVE", Game.WIDTH / 2 - 70, 70);
+
+			g.setFont(fnt2);
+			g.drawString("Play", Game.WIDTH / 2 - 30, 190);
+			g.drawRect(Game.WIDTH / 2 - 100, 150, 200, 64);
+
+			g.drawString("Help", Game.WIDTH / 2 - 30, 290);
+			g.drawRect(Game.WIDTH / 2 - 100, 250, 200, 64);
+
+			g.drawString("Quit", Game.WIDTH / 2 - 30, 390);
+			g.drawRect(Game.WIDTH / 2 - 100, 350, 200, 64);
+		} else if (game.gameState == STATE.HELP) {
+			Font fnt = new Font("arial", 1, 50);
+			//Font fnt2 = new Font("arial", 1, 30);
+			Font help = new Font("arial", 1, 25);
+			Font helP = new Font("arial", 1, 20);
+
+			g.setFont(fnt);
+			g.setColor(Color.white);
+			g.drawString("HELP", Game.WIDTH / 2 - 70, 70);
+
+			g.setFont(help);
+			g.drawString("This is the game names Wave", Game.WIDTH / 2 - 150, 100);
+			g.setFont(helP);
+			g.drawString("Use WASD to move your white player and dodge Enemies!", Game.WIDTH / 2 - 250, 150);
+			g.drawString("Every 500 scorepoints, you get a level higher and get stronger Enemies", Game.WIDTH / 2 - 300, 200);
+			g.drawString("Good Luck! ;)", Game.WIDTH / 2 - 50, 250);
+			g.drawString("Press Back to go back to menu", Game.WIDTH / 2 - 150, 425);
+
+			g.setFont(fnt);
+			g.drawString("Back", Game.WIDTH / 2 - 50, 500);
+			g.drawRect(Game.WIDTH / 2 - 90, 450, 200, 64);
+		}
+
+	}
+}
